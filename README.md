@@ -264,7 +264,3 @@ The tests use H2 in-memory database and don't require PostgreSQL.
 ## License
 
 This project is a skeleton/template for learning and development purposes.
-
-## License
-
-This is a skeleton project for educational purposes.
