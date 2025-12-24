@@ -10,6 +10,10 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * Test security configuration.
  * Disables OAuth2 and uses basic HTTP security for testing.
+ * 
+ * Note: CSRF protection is intentionally disabled for testing purposes only.
+ * This configuration is never used in production - the main SecurityConfig
+ * with full OAuth2 and CSRF protection is used in production environments.
  */
 @TestConfiguration
 @EnableWebSecurity
@@ -28,6 +32,8 @@ public class TestSecurityConfig {
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> {})
+            // CSRF is disabled for testing to simplify test setup
+            // Production uses the main SecurityConfig with CSRF enabled
             .csrf(csrf -> csrf.disable());
 
         return http.build();
