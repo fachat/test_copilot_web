@@ -1,0 +1,154 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/webapp_db"
+  QUARKUS_DATASOURCE_USERNAME: "webapp_user"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+  namespace: default
+type: Opaque
+stringData:
+  QUARKUS_DATASOURCE_PASSWORD: "webapp_password"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: default
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      # Init container to run Flyway migrations
+      initContainers:
+      - name: flyway-migration
+        image: flyway/flyway:10.4.1
+        command:
+        - flyway
+        - migrate
+        env:
+        - name: FLYWAY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: QUARKUS_DATASOURCE_JDBC_URL
+        - name: FLYWAY_USER
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: QUARKUS_DATASOURCE_USERNAME
+        - name: FLYWAY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: QUARKUS_DATASOURCE_PASSWORD
+        - name: FLYWAY_LOCATIONS
+          value: "filesystem:/flyway/sql"
+        - name: FLYWAY_BASELINE_ON_MIGRATE
+          value: "true"
+        volumeMounts:
+        - name: flyway-migrations
+          mountPath: /flyway/sql
+      
+      # Main application container
+      containers:
+      - name: webapp
+        image: webapp-skeleton:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: QUARKUS_DATASOURCE_JDBC_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: QUARKUS_DATASOURCE_JDBC_URL
+        - name: QUARKUS_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: QUARKUS_DATASOURCE_USERNAME
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: QUARKUS_DATASOURCE_PASSWORD
+        - name: QUARKUS_FLYWAY_MIGRATE_AT_START
+          value: "false"
+        livenessProbe:
+          httpGet:
+            path: /q/health/live
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      
+      volumes:
+      - name: flyway-migrations
+        configMap:
+          name: flyway-migrations
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flyway-migrations
+  namespace: default
+data:
+  V1__Create_users_table.sql: |
+    -- Create users table
+    CREATE TABLE IF NOT EXISTS users (
+        id BIGSERIAL PRIMARY KEY,
+        username VARCHAR(255) NOT NULL UNIQUE,
+        email VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Create index on username for faster lookups
+    CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  namespace: default
+  labels:
+    app: webapp
+spec:
+  type: ClusterIP
+  selector:
+    app: webapp
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
