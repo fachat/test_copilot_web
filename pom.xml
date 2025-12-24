@@ -44,13 +44,13 @@
         <!-- JakartaEE REST (JAX-RS with RESTEasy Reactive) -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest</artifactId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
         </dependency>
 
         <!-- JakartaEE JSON-B for JSON processing -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest-jsonb</artifactId>
+            <artifactId>quarkus-resteasy-reactive-jsonb</artifactId>
         </dependency>
 
         <!-- JakartaEE Persistence (JPA with Hibernate ORM) -->
@@ -92,7 +92,7 @@
         <!-- Quarkus Qute for templating (server-side rendering) -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-qute-web</artifactId>
+            <artifactId>quarkus-qute</artifactId>
         </dependency>
 
         <!-- SmallRye Health for health checks -->
