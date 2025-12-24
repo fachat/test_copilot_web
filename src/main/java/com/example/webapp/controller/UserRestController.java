@@ -2,28 +2,25 @@ package com.example.webapp.controller;
 
 import com.example.webapp.model.User;
 import com.example.webapp.service.UserService;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
 /**
- * REST API controller for User operations.
+ * REST API controller for User operations using JAX-RS (JakartaEE).
  * Provides RESTful endpoints for CRUD operations on User entities.
  */
-@RestController
-@RequestMapping("/api/users")
+@Path("/api/users")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserRestController {
 
-    private final UserService userService;
-
-    @Autowired
-    public UserRestController(UserService userService) {
-        this.userService = userService;
-    }
+    @Inject
+    UserService userService;
 
     /**
      * Get all users.
@@ -31,10 +28,10 @@ public class UserRestController {
      *
      * @return list of all users
      */
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    @GET
+    public Response getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return Response.ok(users).build();
     }
 
     /**
@@ -44,11 +41,12 @@ public class UserRestController {
      * @param id the user ID
      * @return the user if found, 404 otherwise
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    @GET
+    @Path("/{id}")
+    public Response getUserById(@PathParam("id") Long id) {
         return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(user -> Response.ok(user).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
     /**
@@ -58,10 +56,10 @@ public class UserRestController {
      * @param user the user to create
      * @return the created user with 201 status
      */
-    @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    @POST
+    public Response createUser(@Valid User user) {
         User createdUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        return Response.status(Response.Status.CREATED).entity(createdUser).build();
     }
 
     /**
@@ -72,11 +70,12 @@ public class UserRestController {
      * @param user the updated user details
      * @return the updated user if found, 404 otherwise
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
+    @PUT
+    @Path("/{id}")
+    public Response updateUser(@PathParam("id") Long id, @Valid User user) {
         return userService.updateUser(id, user)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(updatedUser -> Response.ok(updatedUser).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
     /**
@@ -86,11 +85,12 @@ public class UserRestController {
      * @param id the user ID
      * @return 204 No Content if deleted, 404 otherwise
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    @DELETE
+    @Path("/{id}")
+    public Response deleteUser(@PathParam("id") Long id) {
         if (userService.deleteUser(id)) {
-            return ResponseEntity.noContent().build();
+            return Response.noContent().build();
         }
-        return ResponseEntity.notFound().build();
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }

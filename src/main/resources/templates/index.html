@@ -1,31 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Web Application Skeleton</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>{title ?: 'Quarkus Web Application Skeleton'}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Java Web Application Skeleton</h1>
+            <h1>Quarkus Web Application Skeleton</h1>
         </header>
         
         <main>
             <div class="welcome">
-                <h2>Welcome to the Java Web Application!</h2>
+                <h2>Welcome to the Quarkus Web Application!</h2>
                 <p>This is a skeleton web application demonstrating:</p>
                 <ul>
-                    <li>Spring Boot Framework</li>
+                    <li>Quarkus Framework with JakartaEE</li>
                     <li>PostgreSQL Database Integration</li>
-                    <li>RESTful API Services</li>
-                    <li>OAuth 2.0 Authentication (GitHub)</li>
-                    <li>Server-Side Rendering with Thymeleaf</li>
+                    <li>RESTful API Services (JAX-RS)</li>
+                    <li>Flyway Database Migrations</li>
+                    <li>OAuth 2.0/OIDC Authentication</li>
+                    <li>Server-Side Rendering with Qute</li>
                 </ul>
                 
                 <div class="actions">
-                    <a href="/login" class="button">Login with GitHub</a>
+                    <a href="/home" class="button">Get Started</a>
                 </div>
             </div>
             
@@ -38,22 +39,22 @@
                     </div>
                     <div class="feature">
                         <h4>Database</h4>
-                        <p>PostgreSQL integration with JPA/Hibernate</p>
+                        <p>PostgreSQL integration with JPA/Hibernate and Flyway</p>
                     </div>
                     <div class="feature">
-                        <h4>OAuth 2.0</h4>
-                        <p>Secure authentication with GitHub</p>
+                        <h4>OAuth 2.0/OIDC</h4>
+                        <p>Secure authentication with OpenID Connect</p>
                     </div>
                     <div class="feature">
                         <h4>Server-Side Rendering</h4>
-                        <p>Dynamic HTML pages with Thymeleaf</p>
+                        <p>Dynamic HTML pages with Qute templates</p>
                     </div>
                 </div>
             </div>
         </main>
         
         <footer>
-            <p>&copy; 2024 Java Web Application Skeleton</p>
+            <p>&copy; 2024 Quarkus Web Application Skeleton</p>
         </footer>
     </div>
 </body>

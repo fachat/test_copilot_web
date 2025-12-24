@@ -1,17 +1,17 @@
 package com.example.webapp.repository;
 
 import com.example.webapp.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Optional;
 
 /**
- * Repository interface for User entity.
+ * Repository class for User entity using Quarkus Panache.
  * Provides CRUD operations and custom queries for User data access.
  */
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+@ApplicationScoped
+public class UserRepository implements PanacheRepository<User> {
 
     /**
      * Find a user by username.
@@ -19,7 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param username the username to search for
      * @return an Optional containing the user if found
      */
-    Optional<User> findByUsername(String username);
+    public Optional<User> findByUsername(String username) {
+        return find("username", username).firstResultOptional();
+    }
 
     /**
      * Find a user by email.
@@ -27,7 +29,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email the email to search for
      * @return an Optional containing the user if found
      */
-    Optional<User> findByEmail(String email);
+    public Optional<User> findByEmail(String email) {
+        return find("email", email).firstResultOptional();
+    }
 
     /**
      * Check if a user exists by username.
@@ -35,5 +39,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param username the username to check
      * @return true if user exists, false otherwise
      */
-    boolean existsByUsername(String username);
+    public boolean existsByUsername(String username) {
+        return count("username", username) > 0;
+    }
 }

@@ -1,20 +1,27 @@
 package com.example.webapp;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.QuarkusApplication;
+import io.quarkus.runtime.annotations.QuarkusMain;
 
 /**
- * Main Spring Boot application class for the web application skeleton.
+ * Main Quarkus application class for the web application skeleton.
  * This application provides:
- * - RESTful API endpoints for data access
- * - PostgreSQL database integration
- * - OAuth 2.0 authentication (GitHub)
- * - Server-side rendering with Thymeleaf
+ * - RESTful API endpoints for data access using JAX-RS (JakartaEE)
+ * - PostgreSQL database integration with Flyway migrations
+ * - OAuth 2.0/OIDC authentication
+ * - Server-side rendering with Qute templates
  */
-@SpringBootApplication
-public class WebAppApplication {
+@QuarkusMain
+public class WebAppApplication implements QuarkusApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WebAppApplication.class, args);
+        Quarkus.run(WebAppApplication.class, args);
+    }
+
+    @Override
+    public int run(String... args) throws Exception {
+        Quarkus.waitForExit();
+        return 0;
     }
 }

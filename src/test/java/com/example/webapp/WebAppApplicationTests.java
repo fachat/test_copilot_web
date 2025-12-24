@@ -1,15 +1,12 @@
 package com.example.webapp;
 
-import com.example.webapp.config.TestSecurityConfig;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 /**
- * Basic integration test to verify the Spring Boot application context loads successfully.
+ * Basic integration test to verify the Quarkus application loads successfully.
  */
-@SpringBootTest
-@Import(TestSecurityConfig.class)
+@QuarkusTest
 class WebAppApplicationTests {
 
     @Test
