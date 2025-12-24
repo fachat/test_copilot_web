@@ -1,0 +1,1 @@
+This is a skeleton Java web application project.
