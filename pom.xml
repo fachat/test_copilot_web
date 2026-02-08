@@ -17,7 +17,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.6.4</quarkus.platform.version>
+        <quarkus.platform.version>3.19.4</quarkus.platform.version>
+        <byte-buddy.version>1.17.8</byte-buddy.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
     </properties>
@@ -31,6 +32,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Override Byte Buddy version for Java 26 support -->
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -41,16 +53,16 @@
             <artifactId>quarkus-arc</artifactId>
         </dependency>
 
-        <!-- JakartaEE REST (JAX-RS with RESTEasy Reactive) -->
+        <!-- JakartaEE REST (Quarkus REST, formerly RESTEasy Reactive) -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
+            <artifactId>quarkus-rest</artifactId>
         </dependency>
 
         <!-- JakartaEE JSON-B for JSON processing -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive-jsonb</artifactId>
+            <artifactId>quarkus-rest-jsonb</artifactId>
         </dependency>
 
         <!-- JakartaEE Persistence (JPA with Hibernate ORM) -->
